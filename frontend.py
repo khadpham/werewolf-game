@@ -16,11 +16,13 @@ if __name__ == "__main__":
         "k",
         "l",
         "n",
+        "o",
     ]
     player_roles = [
         "Werewolf",
         "Werewolf",
         "BB Wolf",
+        "Alpha Wolf",
         "Cursed",
         "Harlot",
         "Seer",
