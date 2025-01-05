@@ -17,28 +17,48 @@ class Player:
 
 
 class Game:
-    def __init__(self, player_names, player_roles, time_limits):
-        # if len(player_names) - len(player_roles) != 0:
-        #     raise ValueError("Number of players must match the number of roles.")
-        #     print(f"Number of players: {len(player_names)}")
-        #     print(f"Number of roles: {len(player_roles)}")
-        # random.shuffle(player_names)
-        self.player_roles = player_roles
-        self.players = [Player(name) for name in player_names]
-        self.time_limits = time_limits
-        self.current_time_limit = self.time_limits[0]
-        self.night_phase = True
-        self.hunter_target = None
-        self.witch_revive_used = False
-        self.witch_kill_used = False
-        self.bodyguard_last_target = None
-        self.alpha_wolf_target = None
-        self.alpha_wolf_ability_used = False
-        self.game_targets = []  # List to store targets for the entire game
-        self.hanged_players = []
-        # self.first_night_done = False
+    def __init__(self, player_names, player_roles, time_limits, quick_game=False):
+        if quick_game:
+            # if len(player_names) - len(player_roles) != 0:
+            #     raise ValueError("Number of players must match the number of roles.")
+            #     print(f"Number of players: {len(player_names)}")
+            #     print(f"Number of roles: {len(player_roles)}")
+            random.shuffle(player_names)
+            self.players = [
+                Player(name, role) for name, role in zip(player_names, player_roles)
+            ]
+            self.player_roles = player_roles
+            self.time_limits = time_limits
+            self.current_time_limit = self.time_limits[0]
+            self.night_phase = True
+            self.hunter_target = None
+            self.witch_revive_used = False
+            self.witch_kill_used = False
+            self.bodyguard_last_target = None
+            self.alpha_wolf_target = None
+            self.alpha_wolf_ability_used = False
+            self.game_targets = []  # List to store targets for the entire game
+            self.hanged_players = []
+            # self.first_night_done = False
+            self.day_count = 0  # add day_count for day phase time limit
+            self.print_living_players_and_roles()
 
-        self.day_count = 0  # add day_count for day phase time limit
+        else:
+            self.player_roles = player_roles
+            self.players = [Player(name) for name in player_names]
+            self.time_limits = time_limits
+            self.current_time_limit = self.time_limits[0]
+            self.night_phase = True
+            self.hunter_target = None
+            self.witch_revive_used = False
+            self.witch_kill_used = False
+            self.bodyguard_last_target = None
+            self.alpha_wolf_target = None
+            self.alpha_wolf_ability_used = False
+            self.game_targets = []  # List to store targets for the entire game
+            self.hanged_players = []
+            # self.first_night_done = False
+            self.day_count = 0  # add day_count for day phase time limit
 
     def start_game(self):
         print("Welcome to Werewolf!")
@@ -54,6 +74,7 @@ class Game:
         )
 
         self.first_night_setup()
+
         while True:
             if self.night_phase:
                 self.night()
@@ -72,7 +93,7 @@ class Game:
         self.bb_wolf_target = None
         living_players = self.get_alive_players()
 
-        werewolf_count = self.player_roles.count("Werewolf")
+        werewolf_count = player_roles.count("Werewolf")
 
         for i in range(werewolf_count):
             werewolf = self.get_player_input(
@@ -142,7 +163,7 @@ class Game:
                 # Get Werewolf targets
                 targets = [self.werewolf_target, self.bb_wolf_target]
                 valid_targets = [
-                    t for t in targets if t is not None and t.name != alpha_wolf.name
+                    t for t in targets if t is not None
                 ]  # Exclude Alpha Wolf
                 target_names = [t.name for t in valid_targets]
 
@@ -577,7 +598,7 @@ class Game:
                 # Get Werewolf targets
                 targets = [self.werewolf_target, self.bb_wolf_target]
                 valid_targets = [
-                    t for t in targets if t is not None and t != player
+                    t for t in targets if t is not None
                 ]  # Exclude Alpha Wolf
                 target_names = [t.name for t in valid_targets]
 
